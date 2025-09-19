@@ -1,0 +1,13 @@
+# Robot Framework output files
+log.html
+report.html
+output.xml
+*.log
+
+# Python cache
+__pycache__/
+*.pyc
+
+# VS Code specific files
+.vscode/
+interactive_console_output.xml

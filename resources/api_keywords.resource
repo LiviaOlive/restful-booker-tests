@@ -67,3 +67,11 @@ Delete Booking
     &{headers}=    Create Dictionary    Content-Type=application/json    Cookie=token=${token}
     ${response}=    DELETE On Session    api    /booking/${booking_id}    headers=${headers}
     Status Should Be    201    ${response}
+
+Partially Update Booking
+    [Arguments]    ${booking_id}    ${token}
+    &{headers}=    Create Dictionary    Content-Type=application/json    Accept=application/json    Cookie=token=${token}
+    &{payload}=    Create Dictionary    firstname=Livia    totalprice=500
+    ${response}=    PATCH On Session    api    /booking/${booking_id}    json=${payload}    headers=${headers}
+    Status Should Be    200    ${response}
+        RETURN    ${response.json()}

@@ -50,3 +50,24 @@ Cenário 04: [DELETE] Deletar uma reserva existente com token
     # Validação: Tentar buscar a reserva deletada e esperar um erro 404
     Run Keyword And Expect Error    *HTTPError: 404 Client Error*    Get Booking By ID    ${booking_id_to_delete}
     # No need to assign ${response}, the error message is checked by the built-in keyword
+    
+Cenário 05: [GET] Listar todos os IDs de reserva
+    [Tags]    GET    COLLECTION
+    ${response}=    GET On Session    api    /booking
+    Status Should Be    200    ${response}
+    ${body}=    Set Variable    ${response.json()}
+    Should Be True    len(${body}) > 0    A lista de reservas não deveria estar vazia
+
+Cenário 06: [PATCH] Atualizar parcialmente uma reserva
+    [Tags]    PATCH    AUTH
+    ${token}=    Get Auth Token
+    ${updated_booking}=    Partially Update Booking    ${BOOKING_ID}    ${token}
+    Should Be Equal As Strings    ${updated_booking}[firstname]    Livia
+    Should Be Equal As Numbers    ${updated_booking}[totalprice]    500
+
+Cenário 07: [POST] Tentar autenticar com credenciais inválidas
+    [Tags]    AUTH    NEGATIVE
+    &{credentials}=    Create Dictionary    username=admin    password=senhaerrada
+    ${response}=    POST On Session    api    /auth    json=${credentials}
+    Status Should Be    200    ${response}  # A API retorna 200 mesmo com erro
+    Should Be Equal As Strings    ${response.json()}[reason]    Bad credentials
